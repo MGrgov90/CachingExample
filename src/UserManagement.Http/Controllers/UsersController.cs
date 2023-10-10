@@ -33,6 +33,12 @@ public class UsersController : ControllerBase
         };
     }
 
+    [HttpPut]
+    public void Put([FromBody] UserUpdateRequest request)
+    {
+        _userRepository.Update(request);
+    }
+
     [HttpGet("byAddress")]
     public IEnumerable<UserFilterByAddressResponse> Get([FromQuery] string street,
         [FromQuery] string number)
@@ -74,4 +80,11 @@ public class UsersController : ControllerBase
 
         return result;
     }
+}
+
+public class UserUpdateRequest
+{
+    public string Email { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 }

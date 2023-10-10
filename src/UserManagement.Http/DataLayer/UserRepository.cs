@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using UserManagement.Http.Controllers;
 using UserManagement.Http.Domain;
 
 namespace UserManagement.Http.DataLayer;
@@ -11,6 +12,7 @@ public interface IUserRepository
 {
     IQueryable<UserAddress> GetByAddress(string street, string number);
     User GetByEmail(string email);
+    void Update(UserUpdateRequest request);
 }
 
 public class UserRepository : IUserRepository
@@ -48,8 +50,33 @@ public class UserRepository : IUserRepository
 
         var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(user, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.IgnoreCycles }));
         _cache.Set(email, bytes);
+        //_cache.Set(email,
+        //    bytes,
+        //    new DistributedCacheEntryOptions()
+        //    {
+        //        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(90),
+        //        SlidingExpiration = TimeSpan.FromSeconds(45)
+        //    });
 
         return user;
+    }
+
+    public void Update(UserUpdateRequest request)
+    {
+        //var val = _cache.Get(request.Email);
+        //if (val != null)
+        //{
+        //    _cache.Remove(request.Email);
+        //}
+
+        var user = _context.Users
+            .First(x => x.Email == request.Email);
+
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+
+        _context.SaveChanges();
+
     }
 }
 
