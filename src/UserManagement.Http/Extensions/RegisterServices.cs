@@ -10,4 +10,13 @@ public static class RegisterServices
         services.AddDbContext<UserManagementContext>(o => o.UseInMemoryDatabase("UserDatabase"));
         services.AddScoped<IUserRepository, UserRepository>();
     }
+
+    public static void RegisterRedis(this IServiceCollection services)
+    {
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = "localhost:6379";
+            options.InstanceName = "testInstance_";
+        });
+    }
 }

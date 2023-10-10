@@ -15,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.RegisterDbContext();
+builder.Services.RegisterRedis();
 
 var app = builder.Build();
 app.SeedInMemoryData();
