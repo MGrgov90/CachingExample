@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.RegisterDbContext();
 builder.Services.RegisterRedis();
+builder.Services.RegisterRepositories();
 
 var app = builder.Build();
 app.SeedInMemoryData();

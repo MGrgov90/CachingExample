@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using UserManagement.Http.Controllers;
 using UserManagement.Http.Domain;
 
@@ -18,12 +14,10 @@ public interface IUserRepository
 public class UserRepository : IUserRepository
 {
     private readonly UserManagementContext _context;
-    private readonly IDistributedCache _cache;
 
-    public UserRepository(UserManagementContext context, IDistributedCache cache)
+    public UserRepository(UserManagementContext context)
     {
         _context = context;
-        _cache = cache;
     }
 
     public IQueryable<UserAddress> GetByAddress(string street, string number)
@@ -36,9 +30,9 @@ public class UserRepository : IUserRepository
 
     public User GetByEmail(string email)
     {
-        var val = _cache.Get(email);
-        if (val != null)
-            return JsonSerializer.Deserialize<User>(val);
+        //var val = _cache.Get(email);
+        //if (val != null)
+        //    return JsonSerializer.Deserialize<User>(val);
 
         Task.Delay(new Random().Next(500, 2000)).Wait();
 
@@ -48,8 +42,8 @@ public class UserRepository : IUserRepository
             .First(x => x.Email == email);
 
 
-        var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(user, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.IgnoreCycles }));
-        _cache.Set(email, bytes);
+        //var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(user, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.IgnoreCycles }));
+        //_cache.Set(email, bytes);
         //_cache.Set(email,
         //    bytes,
         //    new DistributedCacheEntryOptions()
